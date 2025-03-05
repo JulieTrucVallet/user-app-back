@@ -5,20 +5,30 @@ const usersRouter = Router()
 
 usersRouter.get('/users', (req, res) => {
     res.json(users)
-});
+})
 
 usersRouter.get('/users/:id', (req, res) => {
     const user = users.find(u => u.id === parseInt(req.params.id))
     if (!user) return res.status(404).json({ message: "User not found" })
     res.json(user)
-});
+})
 
 usersRouter.post('/users', (req, res) => {
+    console.log(req.body)
     const { firstName, lastName, telephone, address, hobbies } = req.body
-    const newUser = { id: users.length + 1, firstName, lastName, telephone, address, hobbies }
+    if(!firstName || !lastName) {
+        res.status(400).json({message : 'All fields are required'})
+    }
+    const newUser = {
+        id: users.length + 1,
+        firstName, lastName,
+        telephone,
+        address,
+        hobbies
+    }
     users.push(newUser)
-    res.status(201).json(newUser)
-});
+    return res.status(201).json({message : 'User created'}, newUser)
+})
 
 usersRouter.put('/users/:id', (req, res) => {
     const user = users.find(u => u.id === parseInt(req.params.id))
